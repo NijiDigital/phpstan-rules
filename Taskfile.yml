@@ -41,6 +41,21 @@ tasks:
       - task composer_install
       - docker exec -u admin -it {{.CONTAINER_NAME}} bash
 
+  test:
+    desc: Run tests inside the Docker container
+    cmds:
+      - task run
+      - task composer_install
+      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/phpunit
+
+  quality:
+    desc: Run quality checks inside the Docker container
+    cmds:
+      - task run
+      - task composer_install
+      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/rector process src tests
+      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/phpcs src tests --standard=PSR12
+      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/phpstan analyse src tests --level max
 
   default:
     desc: List available tasks
