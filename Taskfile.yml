@@ -20,6 +20,7 @@ tasks:
     desc: Run the Docker container with volume mounts
     silent: true
     cmds:
+      - git config merge.ours.driver true    
       - |
         if ! docker image inspect {{.DOCKER_IMAGE_TAG}} > /dev/null 2>&1; then
           echo "Image {{.DOCKER_IMAGE_TAG}} not found, building..."
