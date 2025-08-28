@@ -1,0 +1,48 @@
+version: '3'
+
+vars:
+  CONTAINER_NAME: phpstan-rules
+  DOCKER_IMAGE_TAG: docker-phpstan-rules:beta
+
+tasks:
+  build:
+    desc: Build Docker image with dev target
+    cmds:
+      - docker build --target dev -t {{.DOCKER_IMAGE_TAG}} . --debug
+
+  stop:
+    desc: Stop the Docker container
+    silent: true
+    cmds:
+      - docker rm -f {{.CONTAINER_NAME}}
+
+  run:
+    desc: Run the Docker container with volume mounts
+    silent: true
+    cmds:
+      - |
+        if ! docker image inspect {{.DOCKER_IMAGE_TAG}} > /dev/null 2>&1; then
+          echo "Image {{.DOCKER_IMAGE_TAG}} not found, building..."
+          task build
+        fi
+      - task stop
+      - docker run -d --rm --name {{.CONTAINER_NAME}} -v "{{.PWD}}:/var/www/html" -v "composer-cache:/composer-cache" -v "${HOME}/.ssh:/home/admin/.ssh:ro" -v "${HOME}/.ssh/known_hosts:/home/admin/.ssh/known_hosts:rw" {{.DOCKER_IMAGE_TAG}}
+
+  composer_install:
+   desc: Run composer install inside the Docker container
+   cmds:
+     - docker exec -u admin -it {{.CONTAINER_NAME}} composer install
+
+  cli:
+    desc: Run the Docker container with volume mounts and interactive shell
+    silent: true
+    cmds:
+      - task run
+      - task composer_install
+      - docker exec -u admin -it {{.CONTAINER_NAME}} bash
+
+
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
