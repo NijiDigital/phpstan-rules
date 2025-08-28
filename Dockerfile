@@ -26,7 +26,6 @@ RUN apt-get update && apt-get install -y openssh-client \
     && rm -rf /var/lib/apt/lists/*
 ## END ADD SSH
 
-#ENTRYPOINT ["composer", "install"]
 CMD ["tail", "-f", "/dev/null"]
 
 FROM base AS dev
