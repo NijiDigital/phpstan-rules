@@ -19,7 +19,7 @@ use Psr\Clock\ClockInterface;
  */
 class NoRelativeDatetime implements Rule
 {
-    private const TIP = 'Use dependency injection to get an instance of ' . ClockInterface::class;
+    public const TIP = 'Use dependency injection to get an instance of ' . ClockInterface::class;
 
     #[\Override]
     public function getNodeType(): string
@@ -75,6 +75,7 @@ class NoRelativeDatetime implements Rule
             'january', 'february', 'march', 'april', 'may', 'june', 'july',
             'august', 'september', 'october', 'november', 'december',
             'week', 'month', 'year', 'day',
+            'hour', 'minute', 'second',
         ];
 
         foreach ($relativeKeywords as $keyword) {

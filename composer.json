@@ -7,6 +7,11 @@
             "NijiDigital\\PhpStanRules\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "NijiDigital\\PhpStanRules\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "dsf-niji"
