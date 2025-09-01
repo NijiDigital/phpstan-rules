@@ -13,11 +13,6 @@ use PHPStan\Testing\RuleTestCase;
  */
 class NoRelativeDatetimeTest extends RuleTestCase
 {
-    protected function getRule(): Rule
-    {
-        return new NoRelativeDatetime();
-    }
-
     public function testRule(): void
     {
         $tip = NoRelativeDatetime::TIP;
@@ -80,5 +75,10 @@ class NoRelativeDatetimeTest extends RuleTestCase
                 11,
             ],
         ]);
+    }
+
+    protected function getRule(): Rule
+    {
+        return new NoRelativeDatetime();
     }
 }

@@ -78,8 +78,8 @@ class NoRelativeDatetime implements Rule
             'hour', 'minute', 'second',
         ];
 
-        foreach ($relativeKeywords as $keyword) {
-            if (str_contains($dateString, $keyword)) {
+        foreach ($relativeKeywords as $relativeKeyword) {
+            if (str_contains($dateString, $relativeKeyword)) {
                 return [
                     RuleErrorBuilder::message(
                         sprintf(

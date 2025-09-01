@@ -1,2 +1,6 @@
 rules:
     - NijiDigital\PhpStanRules\Rules\NoRelativeDatetime
+
+parameters:
+    excludePaths:
+        - tests/*/data/*
