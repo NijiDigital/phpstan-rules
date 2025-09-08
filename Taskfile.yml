@@ -54,9 +54,9 @@ tasks:
     cmds:
       - task run
       - task composer_install
-      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/rector process src tests
-      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/phpcs src tests --standard=PSR12
-      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/phpstan analyse src tests --level max
+      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/rector process --config rector.php
+      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/php-cs-fixer fix --config .php-cs-fixer.php --diff
+      - docker exec -u admin -it {{.CONTAINER_NAME}} vendor/bin/phpstan analyse --level max --configuration phpstan.neon src tests
 
   default:
     desc: List available tasks
