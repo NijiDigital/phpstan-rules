@@ -1,6 +1,7 @@
 rules:
     - NijiDigital\PhpStanRules\Rules\NoRelativeDatetime
     - NijiDigital\PhpStanRules\Rules\DoctrineMigrationsSafeMigration
+    - NijiDigital\PhpStanRules\Rules\DoctrineMigrationsDescription
 
 parameters:
     excludePaths:

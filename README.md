@@ -101,6 +101,57 @@ class SafeMigration extends AbstractMigration
 }
 ```
 
+### `DoctrineMigrationsDescription`
+
+Ensures that Doctrine migration classes provide meaningful descriptions by validating the return value of the `getDescription()` method against a configurable pattern.
+
+#### Examples
+
+❌ **Invalid:**
+```php
+class MyMigration extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return ''; // Empty description
+    }
+
+    public function up(Schema $schema): void
+    {
+        $this->addSql('ALTER TABLE user ADD COLUMN email VARCHAR(255)');
+    }
+}
+```
+
+✅ **Valid:**
+```php
+class MyMigration extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return 'Add email column to user table';
+    }
+
+    public function up(Schema $schema): void
+    {
+        $this->addSql('ALTER TABLE user ADD COLUMN email VARCHAR(255)');
+    }
+}
+```
+
+#### Configuration
+
+By default, the rule accepts any non-empty string. You can customize the accepted pattern using the `services` key in your `phpstan.neon` configuration:
+
+```neon
+services:
+    -
+        class: NijiDigital\PhpStanRules\Rules\DoctrineMigrationsDescription
+        arguments:
+            acceptedPattern: '/^[A-Z][a-z0-9\s]+\.?$/'
+        tags:
+            - phpstan.rules.rule
+```
 
 ## Troubleshooting
 
