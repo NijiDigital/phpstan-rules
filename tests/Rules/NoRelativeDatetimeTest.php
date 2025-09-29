@@ -17,7 +17,7 @@ class NoRelativeDatetimeTest extends RuleTestCase
     {
         $tip = NoRelativeDatetime::TIP;
 
-        $this->analyse([__DIR__ . '/data/datetime.php'], [
+        $this->analyse([__DIR__ . '/data/NoRelativeDatetime/datetime.php'], [
             [
                 <<<MSG
                     Usage of DateTime constructor without any argument is forbidden. Use Psr\Clock\ClockInterface::now().

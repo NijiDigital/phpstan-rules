@@ -8,7 +8,7 @@ tasks:
   build:
     desc: Build Docker image with dev target
     cmds:
-      - docker build --target dev -t {{.DOCKER_IMAGE_TAG}} . --debug
+      - docker build --target dev -t {{.DOCKER_IMAGE_TAG}} .
 
   stop:
     desc: Stop the Docker container
