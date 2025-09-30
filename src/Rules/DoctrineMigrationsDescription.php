@@ -50,7 +50,7 @@ class DoctrineMigrationsDescription implements Rule
             return [];
         }
 
-        // Make sure we're in the `up()` method of a migration class
+        // Make sure we're in the `getDescription()` method of a migration class
         $classReflection = $scopeMethod->getDeclaringClass();
         if (!$classReflection->isSubclassOf(AbstractMigration::class) || 'getDescription' !== $scopeMethod->getName()) {
             return [];
