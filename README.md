@@ -101,6 +101,28 @@ class SafeMigration extends AbstractMigration
 }
 ```
 
+#### Configuration
+
+You can customize the behavior of this rule using the `parameters` section in your `phpstan.neon` configuration:
+
+```neon
+parameters:
+    niji:
+        doctrineMigrations:
+            safeMigration:
+                # Custom list of blacklisted SQL patterns with their error messages
+                blacklistedQueries:
+                    '/DROP\s+TABLE\s+/im': 'Dropping tables is not allowed'
+                    '/ALTER\s+TABLE\s+.+\s+DROP\s+COLUMN/im': 'Dropping columns breaks backward compatibility'
+                # Custom annotation tag to mark operations as safe
+                # Make sure to escape @ characters
+                safeMigrationTag: '@@my-safe-migration'
+```
+
+**Available options:**
+- `blacklistedQueries`: Array of regex patterns (as keys) with their corresponding error messages (as values). If not specified, uses default patterns for common unsafe operations.
+- `safeMigrationTag`: The annotation tag used to mark operations as intentionally safe. Defaults to `@safe-migration`.
+
 ### `DoctrineMigrationsDescription`
 
 Ensures that Doctrine migration classes provide meaningful descriptions by validating the return value of the `getDescription()` method against a configurable pattern.
@@ -141,17 +163,19 @@ class MyMigration extends AbstractMigration
 
 #### Configuration
 
-By default, the rule accepts any non-empty string. You can customize the accepted pattern using the `services` key in your `phpstan.neon` configuration:
+By default, the rule accepts any non-empty string. You can customize the accepted pattern using the `parameters` section in your `phpstan.neon` configuration:
 
 ```neon
-services:
-    -
-        class: NijiDigital\PhpStanRules\Rules\DoctrineMigrationsDescription
-        arguments:
-            acceptedPattern: '/^[A-Z][a-z0-9\s]+\.?$/'
-        tags:
-            - phpstan.rules.rule
+parameters:
+    niji:
+        doctrineMigrations:
+            description:
+                # Custom regex pattern for migration descriptions
+                acceptedPattern: '/^[A-Z][a-z0-9\s]+\.?$/'
 ```
+
+**Available options:**
+- `acceptedPattern`: A regex pattern that migration descriptions must match. Defaults to `/.+/im` (any non-empty string).
 
 ## Troubleshooting
 

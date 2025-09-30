@@ -22,9 +22,12 @@ class DoctrineMigrationsDescription implements Rule
 
     public const DEFAULT_ACCEPTED_PATTERN = '/.+/im';
 
+    private readonly string $acceptedPattern;
+
     public function __construct(
-        private readonly string $acceptedPattern = self::DEFAULT_ACCEPTED_PATTERN,
+        ?string $acceptedPattern = self::DEFAULT_ACCEPTED_PATTERN,
     ) {
+        $this->acceptedPattern = $acceptedPattern ?? self::DEFAULT_ACCEPTED_PATTERN;
     }
 
     #[\Override]

@@ -40,14 +40,23 @@ class DoctrineMigrationsSafeMigration implements Rule
         '/TRUNCATE\s+/im' => 'A TRUNCATE operation may not be backward compatible.',
     ];
 
+    /** @var string[] */
+    private readonly array $blacklistedQueries;
+
+    private readonly string $safeMigrationTag;
+
+    /**
+     * @param string[]|null $blacklistedQueries
+     */
     public function __construct(
         private readonly RuleLevelHelper $ruleLevelHelper,
         private readonly Lexer $phpDocLexer,
         private readonly PhpDocParser $phpDocParser,
-        /** @var string[] */
-        private readonly array $blacklistedQueries = self::DEFAULT_BLACKLISTED_QUERIES,
-        private readonly string $safeMigrationTag = self::DEFAULT_SAFE_MIGRATION_TAG
+        ?array $blacklistedQueries = self::DEFAULT_BLACKLISTED_QUERIES,
+        ?string $safeMigrationTag = self::DEFAULT_SAFE_MIGRATION_TAG
     ) {
+        $this->blacklistedQueries = $blacklistedQueries ?? self::DEFAULT_BLACKLISTED_QUERIES;
+        $this->safeMigrationTag = $safeMigrationTag ?? self::DEFAULT_SAFE_MIGRATION_TAG;
     }
 
     #[\Override]
