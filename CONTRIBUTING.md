@@ -125,7 +125,7 @@ If you prefer to develop without Docker:
    }
    ```
 
-2. **Register the rule** in `phpstan.neon`:
+2. **Register the rule** in `extension.neon`:
    ```yaml
    rules:
        - NijiDigital\PhpStanRules\Rules\YourNewRule

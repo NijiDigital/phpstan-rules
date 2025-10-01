@@ -26,12 +26,13 @@
         "phpunit/phpunit": "^11.5",
         "rector/rector": "^1.0",
         "friendsofphp/php-cs-fixer": "^3.86",
-        "doctrine/migrations": "^3.9"
+        "doctrine/migrations": "^3.9",
+        "phpstan/phpstan-deprecation-rules": "^1"
     },
     "extra": {
         "phpstan": {
             "includes": [
-                "phpstan.neon"
+                "extension.neon"
             ]
         }
     }

@@ -15,11 +15,11 @@ If you also install [phpstan/extension-installer](https://github.com/phpstan/ext
 <details>
   <summary>Manual installation</summary>
 
-If you don't want to use `phpstan/extension-installer`, include phpstan.neon in your project's PHPStan config:
+If you don't want to use `phpstan/extension-installer`, include extension.neon in your project's PHPStan config:
 
 ```
 includes:
-    - vendor/nijidigital/phpstan-rules/phpstan.neon
+    - vendor/nijidigital/phpstan-rules/extension.neon
 ```
 </details>
 
