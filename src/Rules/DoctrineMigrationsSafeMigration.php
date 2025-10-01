@@ -17,7 +17,6 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Rules\RuleLevelHelper;
-use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\Type;
 
@@ -112,17 +111,19 @@ class DoctrineMigrationsSafeMigration implements Rule
         // Check if the called method comes from the AbstractMigration class
         if (AbstractMigration::class === $methodDeclaringClass->getName()) {
             $parameters = $node->args;
-            if (
-                \count($parameters) >= 1 &&
-                ($parameters[0] instanceof Arg) &&
-                ($parameterType = $scope->getType($parameters[0]->value)) instanceof ConstantStringType &&
-                ($blacklistedQueryMessage = $this->getBlacklistedQueryMessage($node, $parameterType->getValue()))) {
-                return [
-                    RuleErrorBuilder::message($blacklistedQueryMessage)
-                        ->identifier(self::ERROR_IDENTIFIER)
-                        ->tip(sprintf(self::TIP, $this->safeMigrationTag))
-                        ->build(),
-                ];
+            if (\count($parameters) >= 1 && ($parameters[0] instanceof Arg)) {
+                $constantStrings = $scope->getType($parameters[0]->value)->getConstantStrings();
+                foreach ($constantStrings as $constantString) {
+                    $blacklistedQueryMessage = $this->getBlacklistedQueryMessage($node, $constantString->getValue());
+                    if ($blacklistedQueryMessage !== null) {
+                        return [
+                            RuleErrorBuilder::message($blacklistedQueryMessage)
+                                ->identifier(self::ERROR_IDENTIFIER)
+                                ->tip(sprintf(self::TIP, $this->safeMigrationTag))
+                                ->build(),
+                        ];
+                    }
+                }
             }
         }
 

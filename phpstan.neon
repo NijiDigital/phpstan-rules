@@ -1,43 +1,11 @@
+includes:
+  - extension.neon
+  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+
 parameters:
-    niji:
-        doctrineMigrations:
-            safeMigration:
-                blacklistedQueries: null
-                safeMigrationTag: null
-            description:
-                acceptedPattern: null
+    level: max
+    paths:
+        - src
+        - tests
     excludePaths:
         - tests/*/data/*
-
-parametersSchema:
-	niji: structure([
-        doctrineMigrations: structure([
-            safeMigration: structure([
-                blacklistedQueries: schema(arrayOf(string()), nullable())
-                safeMigrationTag: schema(string(), nullable())
-            ])
-            description: structure([
-                acceptedPattern: schema(string(), nullable())
-            ])
-        ])
-	])
-
-rules:
-    - NijiDigital\PhpStanRules\Rules\NoRelativeDatetime
-
-services:
-    -
-        class: NijiDigital\PhpStanRules\Rules\DoctrineMigrationsSafeMigration
-        arguments:
-            blacklistedQueries: %niji.doctrineMigrations.safeMigration.blacklistedQueries%
-            safeMigrationTag: %niji.doctrineMigrations.safeMigration.safeMigrationTag%
-        tags:
-            - phpstan.rules.rule
-    -
-        class: NijiDigital\PhpStanRules\Rules\DoctrineMigrationsDescription
-        arguments:
-            acceptedPattern: %niji.doctrineMigrations.description.acceptedPattern%
-        tags:
-            - phpstan.rules.rule
-
-
