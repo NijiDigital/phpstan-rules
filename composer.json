@@ -17,20 +17,25 @@
             "name": "dsf-niji"
         }
     ],
+    "config": {
+        "sort-packages": true
+    },
     "require": {
         "php": ">=8.2",
-        "psr/clock": "^1.0",
-        "phpstan/phpstan": "^2.0"
+        "phpstan/phpstan": "^2.0",
+        "psr/clock": "^1.0"
     },
     "require-dev": {
+        "doctrine/migrations": "^3.9",
+        "friendsofphp/php-cs-fixer": "^3.86",
+        "phpstan/phpstan-deprecation-rules": "^2",
         "phpunit/phpunit": "^11.5",
-        "rector/rector": "^2.1",
-        "friendsofphp/php-cs-fixer": "^3.86"
+        "rector/rector": "^2.1"
     },
     "extra": {
         "phpstan": {
             "includes": [
-                "phpstan.neon"
+                "extension.neon"
             ]
         }
     }

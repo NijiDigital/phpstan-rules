@@ -23,5 +23,4 @@ return RectorConfig::configure()
         earlyReturn: true,
         strictBooleans: true,
         phpunitCodeQuality: true,
-        phpunit: true
     );

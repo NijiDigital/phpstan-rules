@@ -33,10 +33,6 @@ class NoRelativeDatetime implements Rule
     #[\Override]
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof New_) {
-            return [];
-        }
-
         if (!$node->class instanceof Name) {
             return [];
         }

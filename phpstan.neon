@@ -1,6 +1,11 @@
-rules:
-    - NijiDigital\PhpStanRules\Rules\NoRelativeDatetime
+includes:
+  - extension.neon
+  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
 
 parameters:
+    level: max
+    paths:
+        - src
+        - tests
     excludePaths:
         - tests/*/data/*
