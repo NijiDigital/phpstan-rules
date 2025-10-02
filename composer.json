@@ -2,6 +2,14 @@
     "name": "nijidigital/phpstan-rules",
     "description": "custom phpstan rules created by dsf-niji",
     "type": "phpstan-extension",
+    "license": ["MIT"],
+    "homepage": "https://github.com/NijiDigital/phpstan-rules",
+    "authors": [
+        {
+            "name": "dsf-niji",
+            "homepage": "https://www.niji.fr/"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "NijiDigital\\PhpStanRules\\": "src/"
@@ -12,11 +20,6 @@
             "NijiDigital\\PhpStanRules\\Tests\\": "tests/"
         }
     },
-    "authors": [
-        {
-            "name": "dsf-niji"
-        }
-    ],
     "config": {
         "sort-packages": true
     },
