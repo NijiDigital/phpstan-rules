@@ -60,7 +60,7 @@ function doSomethingWithTime(ClockInterface $clock) {
 
 ### `DoctrineMigrationsSafeMigration`
 
-Detects potentially unsafe database migration operations that could break backward compatibility in Doctrine migrations. Operations can be marked as safe using the `@safe-migration` annotation.
+Detects potentially unsafe database migration operations that could break backward compatibility in Doctrine migrations. Operations can be marked as safe using PHPStan's standard `@phpstan-ignore` comment.
 
 #### Examples
 
@@ -86,16 +86,16 @@ class SafeMigration extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        // Safe operations (no annotation needed)
+        // Safe operations (no ignore comment needed)
         $this->addSql('ALTER TABLE user ADD COLUMN email VARCHAR(255)');
         $this->addSql('CREATE INDEX idx_user_email ON user (email)');
         $this->addSql('INSERT INTO user (name) VALUES (\'John\')');
 
         // Unsafe operations marked as intentionally safe
-        /** @safe-migration */
+        /* @phpstan-ignore doctrineMigrations.unsafeMigration */
         $this->addSql('DROP TABLE legacy_user');
 
-        /** @safe-migration */
+        /* @phpstan-ignore doctrineMigrations.unsafeMigration */
         $this->addSql('ALTER TABLE user CHANGE name full_name VARCHAR(255)');
     }
 }
@@ -114,14 +114,10 @@ parameters:
                 blacklistedQueries:
                     '/DROP\s+TABLE\s+/im': 'Dropping tables is not allowed'
                     '/ALTER\s+TABLE\s+.+\s+DROP\s+COLUMN/im': 'Dropping columns breaks backward compatibility'
-                # Custom annotation tag to mark operations as safe
-                # Make sure to escape @ characters
-                safeMigrationTag: '@@my-safe-migration'
 ```
 
 **Available options:**
 - `blacklistedQueries`: Array of regex patterns (as keys) with their corresponding error messages (as values). If not specified, uses default patterns for common unsafe operations.
-- `safeMigrationTag`: The annotation tag used to mark operations as intentionally safe. Defaults to `@safe-migration`.
 
 ### `DoctrineMigrationsDescription`
 

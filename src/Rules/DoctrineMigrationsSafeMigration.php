@@ -10,9 +10,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
-use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
@@ -27,9 +24,7 @@ class DoctrineMigrationsSafeMigration implements Rule
 {
     public const ERROR_IDENTIFIER = 'doctrineMigrations.unsafeMigration';
 
-    public const TIP = 'Avoid operations that are not backward compatibles or mark them as being safe using /** %s */';
-
-    public const DEFAULT_SAFE_MIGRATION_TAG = '@safe-migration';
+    public const TIP = 'Avoid operations that are not backward compatibles or mark them as being safe using /* @phpstan-ignore ' . self::ERROR_IDENTIFIER . ' */';
 
     public const DEFAULT_BLACKLISTED_QUERIES = [
         '/ALTER\s+TABLE\s+.+\s+CHANGE\s+/im' => 'An ALTER TABLE CHANGE operation (such as changing the type of a column) may not be backward compatible.',
@@ -39,23 +34,17 @@ class DoctrineMigrationsSafeMigration implements Rule
         '/TRUNCATE\s+/im' => 'A TRUNCATE operation may not be backward compatible.',
     ];
 
-    /** @var string[] */
+    /** @var array<string,string> */
     private readonly array $blacklistedQueries;
-
-    private readonly string $safeMigrationTag;
 
     /**
      * @param string[]|null $blacklistedQueries
      */
     public function __construct(
         private readonly RuleLevelHelper $ruleLevelHelper,
-        private readonly Lexer $phpDocLexer,
-        private readonly PhpDocParser $phpDocParser,
         ?array $blacklistedQueries = self::DEFAULT_BLACKLISTED_QUERIES,
-        ?string $safeMigrationTag = self::DEFAULT_SAFE_MIGRATION_TAG
     ) {
         $this->blacklistedQueries = $blacklistedQueries ?? self::DEFAULT_BLACKLISTED_QUERIES;
-        $this->safeMigrationTag = $safeMigrationTag ?? self::DEFAULT_SAFE_MIGRATION_TAG;
     }
 
     #[\Override]
@@ -114,12 +103,12 @@ class DoctrineMigrationsSafeMigration implements Rule
             if (\count($parameters) >= 1 && ($parameters[0] instanceof Arg)) {
                 $constantStrings = $scope->getType($parameters[0]->value)->getConstantStrings();
                 foreach ($constantStrings as $constantString) {
-                    $blacklistedQueryMessage = $this->getBlacklistedQueryMessage($node, $constantString->getValue());
+                    $blacklistedQueryMessage = $this->getBlacklistedQueryMessage($constantString->getValue());
                     if ($blacklistedQueryMessage !== null) {
                         return [
                             RuleErrorBuilder::message($blacklistedQueryMessage)
                                 ->identifier(self::ERROR_IDENTIFIER)
-                                ->tip(sprintf(self::TIP, $this->safeMigrationTag))
+                                ->tip(self::TIP)
                                 ->build(),
                         ];
                     }
@@ -130,12 +119,8 @@ class DoctrineMigrationsSafeMigration implements Rule
         return [];
     }
 
-    private function getBlacklistedQueryMessage(Node $node, string $sqlQuery): ?string
+    private function getBlacklistedQueryMessage(string $sqlQuery): ?string
     {
-        if ($this->isTaggedAsSafeMigration($node)) {
-            return null;
-        }
-
         foreach ($this->blacklistedQueries as $blacklistedQuery => $message) {
             if (preg_match($blacklistedQuery, $sqlQuery)) {
                 return $message;
@@ -143,25 +128,5 @@ class DoctrineMigrationsSafeMigration implements Rule
         }
 
         return null;
-    }
-
-    private function isTaggedAsSafeMigration(Node $node): bool
-    {
-        $docComment = $node->getDocComment();
-        if (null === $docComment) {
-            return false;
-        }
-
-        $phpDocString = $docComment->getText();
-        $phpDocTokens = new TokenIterator($this->phpDocLexer->tokenize($phpDocString));
-        $phpDocNode = $this->phpDocParser->parse($phpDocTokens);
-
-        foreach ($phpDocNode->getTags() as $phpDocTagNode) {
-            if ($this->safeMigrationTag === $phpDocTagNode->name) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

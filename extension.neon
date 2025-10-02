@@ -3,7 +3,6 @@ parameters:
         doctrineMigrations:
             safeMigration:
                 blacklistedQueries: null
-                safeMigrationTag: null
             description:
                 acceptedPattern: null
 
@@ -12,7 +11,6 @@ parametersSchema:
         doctrineMigrations: structure([
             safeMigration: structure([
                 blacklistedQueries: schema(arrayOf(string()), nullable())
-                safeMigrationTag: schema(string(), nullable())
             ])
             description: structure([
                 acceptedPattern: schema(string(), nullable())
@@ -28,7 +26,6 @@ services:
         class: NijiDigital\PhpStanRules\Rules\DoctrineMigrationsSafeMigration
         arguments:
             blacklistedQueries: %niji.doctrineMigrations.safeMigration.blacklistedQueries%
-            safeMigrationTag: %niji.doctrineMigrations.safeMigration.safeMigrationTag%
         tags:
             - phpstan.rules.rule
     -

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace NijiDigital\PhpStanRules\Tests\Rules;
 
 use NijiDigital\PhpStanRules\Rules\DoctrineMigrationsSafeMigration;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleLevelHelper;
 use PHPStan\Testing\RuleTestCase;
@@ -18,7 +16,7 @@ class DoctrineMigrationsSafeMigrationTest extends RuleTestCase
 {
     public function testRule(): void
     {
-        $tip = sprintf('Avoid operations that are not backward compatibles or mark them as being safe using /** %s */', DoctrineMigrationsSafeMigration::DEFAULT_SAFE_MIGRATION_TAG);
+        $tip = DoctrineMigrationsSafeMigration::TIP;
 
         $this->analyse([__DIR__ . '/data/DoctrineMigrationsSafeMigration/UnsafeMigration.php'], [
             [
@@ -77,8 +75,6 @@ class DoctrineMigrationsSafeMigrationTest extends RuleTestCase
     {
         return new DoctrineMigrationsSafeMigration(
             $this->getContainer()->getByType(RuleLevelHelper::class),
-            $this->getContainer()->getByType(Lexer::class),
-            $this->getContainer()->getByType(PhpDocParser::class)
         );
     }
 }
